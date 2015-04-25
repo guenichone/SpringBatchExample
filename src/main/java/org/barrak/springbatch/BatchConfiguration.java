@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
 
@@ -28,8 +29,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.retry.RetryListener;
 import org.springframework.retry.RetryPolicy;
-import org.springframework.retry.backoff.BackOffInterruptedException;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
@@ -41,8 +41,18 @@ public class BatchConfiguration {
 
     @Autowired
     private StepExecutionListener stepExecutionListener;
+
+    @Autowired
+    private SkipListener skipListener;
     @Autowired
     private RetryListener retryListener;
+
+    @Autowired
+    private RetryPolicy retryPolicy;
+    @Autowired
+    private BackOffPolicy backOffPolicy;
+    @Autowired
+    private SkipPolicy skipPolicy;
 
     // tag::readerwriterprocessor[]
     @Bean
@@ -78,42 +88,35 @@ public class BatchConfiguration {
             ItemReader<Person> reader,
             ItemProcessor<Person, Person> processor,
             ItemWriter<Person> writer,
-            SkipPolicy skipPolicy,
-            RetryPolicy retryPolicy,
             TaskExecutor taskExecutor) {
-
-        FixedBackOffPolicy backOff = new FixedBackOffPolicy() {
-
-            @Override
-            protected void doBackOff() throws BackOffInterruptedException {
-                LOG.info("Do back off.");
-                super.doBackOff();
-            }
-        };
-        backOff.setBackOffPeriod(2000);
 
         return stepBuilderFactory.get("step1")
                 .<Person, Person>chunk(2)
+                // Step definition
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
+                // Set step faul tolerant
                 .faultTolerant()
                 // Retry policy
                 //                .retryPolicy(retryPolicy)
                 // OR Retry manual configuration
                 .retry(NullPointerException.class)
                 .retryLimit(3)
-                // Retry listener is not working correctly
-                .listener(retryListener)
                 // BackOff policy
-                .backOffPolicy(backOff)
-                // Skip policy
-                .skipPolicy(skipPolicy)
+                .backOffPolicy(backOffPolicy)
+                // Skip policy (never skip)
+                //                .skipPolicy(skipPolicy)
+                // OR Skip manual configuration
+                .skip(NullPointerException.class)
+                .skipLimit(1) // One skip of item allowed
                 // Multithreading (Exclusive with step operation)
-                .taskExecutor(taskExecutor)
-                .throttleLimit(1)
-                // Step listener
+//                .taskExecutor(taskExecutor)
+                //                .throttleLimit(1)
+                // Listener
                 .listener(stepExecutionListener)
+                .listener(skipListener)
+                .listener(retryListener)
                 .build();
     }
     // end::jobstep[]

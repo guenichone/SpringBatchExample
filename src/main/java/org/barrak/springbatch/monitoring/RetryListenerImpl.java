@@ -19,18 +19,18 @@ public class RetryListenerImpl implements RetryListener {
 
     @Override
     public <T, E extends Throwable> boolean open(RetryContext context, RetryCallback<T, E> callback) {
-        LOG.info("Retry first try.");
+        LOG.info("Retry open");
         return true;
     }
 
     @Override
     public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback, Throwable throwable) {
-        LOG.info("Retry last try.");
+        LOG.info("Retry close");
     }
 
     @Override
     public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback, Throwable throwable) {
-        LOG.info("Retry attempt.");
+        LOG.info("Retry error : cnt {}, {}", context.getRetryCount(), context.getLastThrowable());
     }
 
 }

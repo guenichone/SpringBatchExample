@@ -20,7 +20,6 @@ public class SimpleRetryPolicyProxy implements RetryPolicy {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleRetryPolicyProxy.class);
 
     private RetryPolicy retryPolicy;
-
     {
         Map<Class<? extends Throwable>, Boolean> retryableExceptions
                 = new HashMap<Class<? extends Throwable>, Boolean>();
