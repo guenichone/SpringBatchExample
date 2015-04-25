@@ -1,5 +1,6 @@
-package orga.barrak.springbatch;
+package org.barrak.springbatch;
 
+import org.barrak.springbatch.pojo.Person;
 import java.util.List;
 import javax.sql.DataSource;
 import org.slf4j.Logger;

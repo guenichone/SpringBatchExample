@@ -1,6 +1,6 @@
-package orga.barrak.springbatch;
+package org.barrak.springbatch.pojo;
 
-import orga.barrak.springbatch.monitoring.InstanceCounter;
+import org.barrak.springbatch.monitoring.InstanceCounter;
 
 public class Person extends InstanceCounter {
 

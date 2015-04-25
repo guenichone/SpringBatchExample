@@ -1,5 +1,6 @@
-package orga.barrak.springbatch;
+package org.barrak.springbatch;
 
+import org.barrak.springbatch.pojo.Person;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

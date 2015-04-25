@@ -1,4 +1,4 @@
-package orga.barrak.springbatch.init;
+package org.barrak.springbatch.dao;
 
 import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;

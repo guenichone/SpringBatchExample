@@ -1,4 +1,4 @@
-package orga.barrak.springbatch.monitoring;
+package org.barrak.springbatch.monitoring;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package orga.barrak.springbatch.monitoring;
+package org.barrak.springbatch.monitoring;
 
 /**
  * Instance counter abstract class.

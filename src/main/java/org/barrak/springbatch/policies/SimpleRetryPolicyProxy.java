@@ -1,4 +1,4 @@
-package orga.barrak.springbatch.policies;
+package org.barrak.springbatch.policies;
 
 import java.util.HashMap;
 import java.util.Map;

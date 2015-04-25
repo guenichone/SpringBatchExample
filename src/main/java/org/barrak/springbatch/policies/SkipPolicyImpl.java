@@ -1,4 +1,4 @@
-package orga.barrak.springbatch.policies;
+package org.barrak.springbatch.policies;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

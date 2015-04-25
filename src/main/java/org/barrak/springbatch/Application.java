@@ -1,5 +1,6 @@
-package orga.barrak.springbatch;
+package org.barrak.springbatch;
 
+import org.barrak.springbatch.pojo.Person;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
