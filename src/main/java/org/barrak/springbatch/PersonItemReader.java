@@ -45,12 +45,14 @@ public class PersonItemReader implements ItemReader<Person> {
 
     @Override
     public Person read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        if (toProcess.size() > 0) {
-            LOG.info("Read item.");
-            return toProcess.remove(0);
-        } else {
-            LOG.info("No more item to read.");
-            return null;
+        synchronized (toProcess) {
+            if (toProcess.size() > 0) {
+                LOG.info("Read item.");
+                return toProcess.remove(0);
+            } else {
+                LOG.info("No more item to read.");
+                return null;
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.Step;
@@ -41,7 +42,8 @@ public class BatchConfiguration {
 
     @Autowired
     private StepExecutionListener stepExecutionListener;
-
+    @Autowired
+    private ChunkListener chunkListener;
     @Autowired
     private SkipListener skipListener;
     @Autowired
@@ -91,6 +93,7 @@ public class BatchConfiguration {
             TaskExecutor taskExecutor) {
 
         return stepBuilderFactory.get("step1")
+                .listener(stepExecutionListener)
                 .<Person, Person>chunk(2)
                 // Step definition
                 .reader(reader)
@@ -98,25 +101,25 @@ public class BatchConfiguration {
                 .writer(writer)
                 // Set step faul tolerant
                 .faultTolerant()
+                .listener(chunkListener)
                 // Retry policy
                 //                .retryPolicy(retryPolicy)
                 // OR Retry manual configuration
                 .retry(NullPointerException.class)
                 .retryLimit(3)
+                .listener(retryListener)
                 // BackOff policy
                 .backOffPolicy(backOffPolicy)
                 // Skip policy (never skip)
-                //                .skipPolicy(skipPolicy)
+                                .skipPolicy(skipPolicy)
                 // OR Skip manual configuration
-                .skip(NullPointerException.class)
-                .skipLimit(1) // One skip of item allowed
+//                .skip(NullPointerException.class)
+                //                .skipLimit(1) // One skip of item allowed
+                //                .listener(skipListener)
                 // Multithreading (Exclusive with step operation)
 //                .taskExecutor(taskExecutor)
-                //                .throttleLimit(1)
+                //                .throttleLimit(10)
                 // Listener
-                .listener(stepExecutionListener)
-                .listener(skipListener)
-                .listener(retryListener)
                 .build();
     }
     // end::jobstep[]
